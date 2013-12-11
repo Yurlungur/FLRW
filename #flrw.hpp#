@@ -36,9 +36,10 @@
 
 // The iteration function
 // ----------------------------------------------------------------------
-
 // Gets the pressure as a function of energy density and equation of
 // state variable omega. The equation of state variable is assumed to
 // be some function of rho.
 double get_omega(double (*omega)(double), double rho);
+
+double get
 // ----------------------------------------------------------------------
