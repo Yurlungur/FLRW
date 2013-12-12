@@ -1,7 +1,7 @@
 // flrw.hpp
 
 // Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
-// Time-stamp: <2013-12-11 17:35:07 (jonah)>
+// Time-stamp: <2013-12-12 17:24:02 (jonah)>
 
 // This is the prototype and header file for the program that uses
 // Runge-Kutta methods to numerically explore
@@ -60,24 +60,14 @@ double eval_func(double (*func)(double,double), const dVector& y);
 // be some function of rho.
 double get_p(double (*omega)(double), double rho);
 
-// Gets the energy density rho as a function of the scale factor a
-// and its derivative b.
-double get_rho(double a, double b);
-// Finds rho given the state vector y = [a,b]
-double get_rho(const dVector& y);
-
 // Gets the derivative of the scale factor. Takes scale factor and
 // derivative. Mostly for clarity... since the answer is obvious.
-double get_a_prime(double a, double b);
-// Finds a' given the state vector y = [a,b]
+double get_a_prime(double a, double rho);
+// Finds a' given the state vector y = [a,rho]
 double get_a_prime(const dVector& y);
 
-// Gets the value of the second derivative of the scale factor, a'' =
-// b'. Technically a function of a and b, but the equation of state
-// function must be defined too.
-double get_b_prime(double (*omega)(double), double a, double b);
-// Finds b' given the state vector y = [a,b]
-double get_b_prime(double (*omega)(double), const dVector& y);
+// Gets the derivative of rho
+double get_rho_prime(double (*omega)(double),double a, double rho);
 
 // The function for iterating through time steps. y' = f(y). We call
 // this method get_y_prime to indicate that it also takes the equation

@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
 # Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
-# Time-stamp: <2013-12-11 21:42:50 (jonah)>
+# Time-stamp: <2013-12-12 17:39:42 (jonah)>
 
 # This is a companion program to my FLRW simulator. It takes any
 # number of data files and generates a plot of all the scale factors
@@ -20,7 +20,7 @@ import sys,os
 # ----------------------------------------------------------------------
 
 
-def plot_scale_factors(time_list,scale_factor_list,initial_b_list):
+def plot_scale_factors(time_list,scale_factor_list,initial_rho_list):
     """
     Takes two lists. One a list of arrays of times. Another a list of
     arrays scale factors Plots scale factors as a function of
@@ -34,33 +34,33 @@ def plot_scale_factors(time_list,scale_factor_list,initial_b_list):
     lines = [plt.plot(time_list[i],scale_factor_list[i],
                       linewidth=pav.my_linewidth)
              for i in range(len(time_list))]
-    plt.legend([str(b) for b in initial_b_list])
+    plt.legend([str(rho) for rho in initial_rho_list])
     plt.xlabel(pav.xlabel)
     plt.show()
     return
 
-def sort_lists(time_list,scale_factor_list,initial_b_list):
+def sort_lists(time_list,scale_factor_list,initial_rho_list):
     """
     Takes the lists and sorts them based on the initial_b_list.
     """
-    B_MAP = {initial_b_list[i] : (time_list[i],scale_factor_list[i])
-             for i in range(len(initial_b_list))}
-    initial_b_list.sort()
-    time_list = [B_MAP[b][0] for b in initial_b_list]
-    scale_factor_list = [B_MAP[b][1] for b in initial_b_list]
-    return time_list,scale_factor_list,initial_b_list
+    RHO_MAP = {initial_rho_list[i] : (time_list[i],scale_factor_list[i])
+             for i in range(len(initial_rho_list))}
+    initial_rho_list.sort()
+    time_list = [RHO_MAP[rho][0] for rho in initial_rho_list]
+    scale_factor_list = [RHO_MAP[rho][1] for rho in initial_rho_list]
+    return time_list,scale_factor_list,initial_rho_list
 
 if __name__ == "__main__":
     time_list = []
     scale_factor_list = []
-    initial_b_list = []
+    initial_rho_list = []
     for filename in sys.argv[1:]:
-        times,a_values,b_values,rho_values,p_values = pav.load_data(filename)
+        times,a_values,rho_values,p_values = pav.load_data(filename)
         time_list.append(times)
         scale_factor_list.append(a_values)
-        initial_b_list.append(b_values[0])
-    time_list,scale_factor_list,initial_b_list = sort_lists(time_list,
+        initial_rho_list.append(rho_values[0])
+    time_list,scale_factor_list,initial_rho_list = sort_lists(time_list,
                                                             scale_factor_list,
-                                                            initial_b_list)
-    plot_scale_factors(time_list,scale_factor_list,initial_b_list)
+                                                            initial_rho_list)
+    plot_scale_factors(time_list,scale_factor_list,initial_rho_list)
     

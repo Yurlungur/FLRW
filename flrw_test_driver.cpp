@@ -1,7 +1,7 @@
 // flrw_test_driver.cpp
 
 // Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
-// Time-stamp: <2013-12-11 17:49:52 (jonah)>
+// Time-stamp: <2013-12-12 17:21:27 (jonah)>
 
 // This is the unit test driver for the FLRW library.
 
@@ -15,7 +15,7 @@ using namespace std;
 
 // ----------------------------------------------------------------------
 double omega_1(double rho) {
-  return 1;
+  return 1.0;
 }
 // ----------------------------------------------------------------------
 
@@ -36,8 +36,8 @@ int main() {
        << "Making test dVector. It will contain a and b."
        << endl;
   dVector y;
-  y.push_back(1);
-  y.push_back(2);
+  y.push_back(0.1);
+  y.push_back(0.1);
   cout << "Vector is: " << y << "." << endl;
   cout << "-------------------------------------------------------"
        << endl;
@@ -53,23 +53,13 @@ int main() {
 
   cout << "\n"
        << "-------------------------------------------------------\n"
-       << "Testing the get p and rho methods. Assuming omega = 1."
-       << endl;
-  double rho = get_rho(y);
-  cout << "\trho = " << rho << "\n"
-       << "\tp = " << get_p(omega_1,rho) << ".\n"
-       << "-------------------------------------------------------"
-       << endl;
-
-  cout << "\n"
-       << "-------------------------------------------------------\n"
        << "Testing the get_prime methods. Still assuming omega = 1."
        << endl;
   double a_prime = get_a_prime(y);
-  double b_prime = get_b_prime(omega_1,y);
+  double rho_prime = get_rho_prime(omega_1,y[0],y[1]);
   dVector y_prime = get_y_prime(omega_1,y);
   cout << "\ta_prime = " << a_prime << "\n"
-       << "\tb_prime = " << b_prime << "\n"
+       << "\trho_prime = " << rho_prime << "\n"
        << "\ty_prime = " << y_prime << ".\n"
        << "-------------------------------------------------------"
        << endl;

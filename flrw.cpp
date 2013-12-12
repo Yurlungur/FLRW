@@ -1,7 +1,7 @@
 // flrw.cpp
 
 // Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
-// Time-stamp: <2013-12-11 17:36:48 (jonah)>
+// Time-stamp: <2013-12-12 17:22:40 (jonah)>
 
 // This is the implementation of my program to numerically explore
 // Friedmann-Lemaitre-Robertson-Walker metrics.
@@ -33,8 +33,8 @@ using std::endl;
 double eval_func(double (*func)(double,double), const dVector& y) {
   assert ( y.size() == 2 && "y = [a,b]" );
   double a = y[0];
-  double b = y[1];
-  return func(a,b);
+  double rho = y[1];
+  return func(a,rho);
 }
 // ----------------------------------------------------------------------
 
@@ -44,33 +44,28 @@ double eval_func(double (*func)(double,double), const dVector& y) {
 double get_p(double (*omega)(double), double rho) {
   return omega(rho)*rho;
 }
-double get_rho(double a, double b) {
-  return (3*b + 3*K - LAMBDA*a*a)/(8*M_PI*a*a);
+
+double get_a_prime(double a, double rho) {
+  //  std::cout << "\tb = " << b << std::endl;
+  return sqrt((a*a*8.0*M_PI*rho-LAMBDA)/3.0);
 }
-double get_rho(const dVector& y) {
-  return eval_func(get_rho,y);
-}
-double get_a_prime(double a, double b) {
-  return b;
-}
+
 double get_a_prime(const dVector& y) {
   return eval_func(get_a_prime,y);
 }
-double get_b_prime(double (*omega)(double), double a, double b) {
-  double rho = get_rho(a,b);
-  double p = get_p(omega,rho);
-  return (-1)*(K + b*b + 8*M_PI*p*a*a + LAMBDA*a*a)/(2*a);
+
+double get_rho_prime(double (*omega)(double), double a, double rho) {
+  return -3*(get_a_prime(a,rho)/a)*(rho + get_p(omega,rho));
 }
-double get_b_prime(double (*omega)(double), const dVector& y) {
-  assert ( y.size() == 2 && "y = [a,b]" );
-  double a = y[0];
-  double b = y[1];
-  return get_b_prime(omega,a,b);
-}
+
 dVector get_y_prime(double (*omega)(double), const dVector& y) {
   dVector output;
-  output.push_back(get_a_prime(y));
-  output.push_back(get_b_prime(omega,y));
+  double a = y[0];
+  double rho = y[1];
+  double a_prime = get_a_prime(a,rho);
+  double rho_prime = get_rho_prime(omega,a,rho);
+  output.push_back(a_prime);
+  output.push_back(rho_prime);
   return output;
 }
 // ----------------------------------------------------------------------
@@ -91,10 +86,10 @@ void print_simulation(const RKF45& simulation, std::ostream& out,
 		      double (*omega)(double)) {
   // Some convenience variables
   dVector y;
-  double t,a,b,rho,p;
+  double t,a,rho,p;
 
   // Print a header line
-  out << "# t\ta\ta'\trho\tp" << endl;
+  out << "# t\ta\trho\tp" << endl;
 
   // Prints the rest
   for (int n = 0; n < simulation.steps(); n++) {
@@ -102,12 +97,11 @@ void print_simulation(const RKF45& simulation, std::ostream& out,
     t = simulation.get_t(n);
     y = simulation.get_y(n);
     a = y[0];
-    b = y[1];
-    rho = get_rho(y);
+    rho = y[1];
     p = get_p(omega,rho);
     // Output
     out << t << " "
-	<< a << " " << b << " "
+	<< a << " "
 	<< rho << " " << p
 	<< endl;
   }

@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
 # Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
-# Time-stamp: <2013-12-11 21:16:30 (jonah)>
+# Time-stamp: <2013-12-12 17:28:32 (jonah)>
 
 # This is a companion program to my FLRW simulator. It takes a data
 # file and generates a plot of the scale factor, its derivative, the
@@ -37,28 +37,27 @@ def load_data(filename):
         data = np.loadtxt(filename).transpose()
     times = data[0]
     a_values = data[1]
-    b_values = data[2]
-    rho_values = data[3]
-    p_values = data[4]
-    return times,a_values,b_values,rho_values,p_values
+    rho_values = data[2]
+    p_values = data[3]
+    return times,a_values,rho_values,p_values
 
-def plot_data(times,a_values,b_values,rho_values,p_values):
+def plot_data(times,a_values,rho_values,p_values):
     """
     Takes the times,a_values,b_values,rho_values, and p_values
     and makes a nice plot out of them. Takes labels, etc. into account.
     """
     mpl.rcParams.update({'font.size': fontsize})
     lines = [plt.plot(times,y_set,linewidth=my_linewidth)
-             for y_set in [a_values,b_values,rho_values,p_values]]
-    plt.legend(["a","a'",r'$\rho$',"p"])
+             for y_set in [a_values,rho_values,p_values]]
+    plt.legend(["a",r'$\rho$',"p"])
     plt.xlabel(xlabel)
     plt.show()
     return
 
 def plot_file(filename):
     "Plots the data in a file."
-    times,a_values,b_values,rho_values,p_values = load_data(filename)
-    plot_data(times,a_values,b_values,rho_values,p_values)
+    times,a_values,rho_values,p_values = load_data(filename)
+    plot_data(times,a_values,rho_values,p_values)
     return
 
 if __name__ == "__main__":
