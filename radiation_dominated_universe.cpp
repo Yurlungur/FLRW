@@ -1,6 +1,6 @@
 // radiation_dominated_universe.cpp
 // Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
-// Time-stamp: <2013-12-11 20:10:58 (jonah)>
+// Time-stamp: <2013-12-11 21:35:19 (jonah)>
 
 // This is the main loop to generate a radiation dominated universe to
 // simulate.
@@ -16,15 +16,15 @@ using std::string;
 
 // Global constants
 // ----------------------------------------------------------------------
-const int NUM_STARTING_CONDITIONS = 3;
+const int NUM_STARTING_CONDITIONS = 5;
 const string DATA_FILE_START = "radiation_dominated_universe_b0";
 const string DATA_FILE_END = ".dat";
-const double B_START [] = {1,2,3};
-const string B_START_STRINGS [] = {"1","2","3"};
+const double B_START [] = {0,0.1,0.25,0.5,0.75};
+const string B_START_STRINGS [] = {"0","0.1","0.25","0.5","0.75"};
 const double A_0 = 1;
 const double T_0 = 0;
 const double MAX_DT = 0.1;
-const double MAX_T = 100;
+const double MAX_T = 30;
 const double RELATIVE_ERROR_FACTOR = 1E-5;
 // ----------------------------------------------------------------------
 
