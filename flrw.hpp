@@ -1,7 +1,7 @@
 // flrw.hpp
 
-// Author: Jonah Miller (jonah.maxwell.miller@gmail.com)\
-// Time-stamp: <2013-12-11 03:02:28 (jonah)>
+// Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
+// Time-stamp: <2013-12-11 17:35:07 (jonah)>
 
 // This is the prototype and header file for the program that uses
 // Runge-Kutta methods to numerically explore
@@ -32,6 +32,7 @@
 #pragma once
 // Includes
 #include "rkf45.hpp"
+#include <iostream>
 
 
 // Global constants
@@ -78,4 +79,27 @@ double get_b_prime(double (*omega)(double), double a, double b);
 // Finds b' given the state vector y = [a,b]
 double get_b_prime(double (*omega)(double), const dVector& y);
 
+// The function for iterating through time steps. y' = f(y). We call
+// this method get_y_prime to indicate that it also takes the equation
+// of state function omega. The user must specify omega and define a
+// new function to feed into the runge-kutta integrator. However, this
+// method should help.
+dVector get_y_prime(double (*omega)(double), const dVector& y);
+
+// ----------------------------------------------------------------------
+
+
+// Output
+// ----------------------------------------------------------------------
+// Overload the stream input operator to print an input dVector. If
+// you print the fields on a grid, this will look pretty bad.
+std::ostream& operator<< (std::ostream& out, const dVector& in);
+
+// Prints a nicely formatted data set for the simulation to the output
+// stream out. Takes the equation of state function to plot that too.
+void print_simulation(const RKF45& simulation, std::ostream& out,
+		      double (*omega)(double));
+// Takes a filename instead of a string.
+void print_simulation(const RKF45& simulation, const char* filename,
+		      double (*omega)(double));
 // ----------------------------------------------------------------------

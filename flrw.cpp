@@ -1,7 +1,7 @@
 // flrw.cpp
 
 // Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
-// Time-stamp: <2013-12-11 03:07:17 (jonah)>
+// Time-stamp: <2013-12-11 17:36:48 (jonah)>
 
 // This is the implementation of my program to numerically explore
 // Friedmann-Lemaitre-Robertson-Walker metrics.
@@ -23,6 +23,8 @@
 #include "flrw.hpp"
 #include <cmath>
 #include <cassert>
+#include <fstream>
+using std::endl;
 // ----------------------------------------------------------------------
 
 
@@ -39,7 +41,7 @@ double eval_func(double (*func)(double,double), const dVector& y) {
 
 // The iteration function
 // ----------------------------------------------------------------------
-double get_p(double (*omega), double rho) {
+double get_p(double (*omega)(double), double rho) {
   return omega(rho)*rho;
 }
 double get_rho(double a, double b) {
@@ -64,5 +66,57 @@ double get_b_prime(double (*omega)(double), const dVector& y) {
   double a = y[0];
   double b = y[1];
   return get_b_prime(omega,a,b);
+}
+dVector get_y_prime(double (*omega)(double), const dVector& y) {
+  dVector output;
+  output.push_back(get_a_prime(y));
+  output.push_back(get_b_prime(omega,y));
+  return output;
+}
+// ----------------------------------------------------------------------
+
+
+// Output
+// ----------------------------------------------------------------------
+std::ostream& operator <<(std::ostream& out, const dVector& in) {
+  out << "[";
+  for (unsigned int i = 0; i < in.size()-1; i++) {
+    out << in[i] << ", ";
+  }
+  out << in[in.size()-1] << "]";
+  return out;
+}
+
+void print_simulation(const RKF45& simulation, std::ostream& out,
+		      double (*omega)(double)) {
+  // Some convenience variables
+  dVector y;
+  double t,a,b,rho,p;
+
+  // Print a header line
+  out << "# t\ta\ta'\trho\tp" << endl;
+
+  // Prints the rest
+  for (int n = 0; n < simulation.steps(); n++) {
+    // Assign variables
+    t = simulation.get_t(n);
+    y = simulation.get_y(n);
+    a = y[0];
+    b = y[1];
+    rho = get_rho(y);
+    p = get_p(omega,rho);
+    // Output
+    out << t << " "
+	<< a << " " << b << " "
+	<< rho << " " << p
+	<< endl;
+  }
+}
+void print_simulation(const RKF45& simulation, const char* filename,
+		      double (*omega)(double)) {
+  std::ofstream file;
+  file.open(filename);
+  print_simulation(simulation,file,omega);
+  file.close();
 }
 // ----------------------------------------------------------------------
