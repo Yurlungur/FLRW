@@ -1,14 +1,15 @@
-// dark_energy_dominated_universe.cpp
+// matter_dominated_universe.cpp
 // Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
-// Time-stamp: <2013-12-13 17:27:51 (jonah)>
+// Time-stamp: <2013-12-13 17:42:26 (jonah)>
 
-// This is the main loop to generate a dark energy dominated universe
-// to simulate.
+// This is the main loop to generate a radiation dominated universe to
+// simulate.
 
 // Includes
 #include "flrw.hpp"
 #include <iostream>
 #include <string>
+#include <cmath>
 using std::cout;
 using std::endl;
 using std::string;
@@ -17,23 +18,23 @@ using std::string;
 // Global constants
 // ----------------------------------------------------------------------
 const int NUM_STARTING_CONDITIONS = 4;
-const string DATA_FILE_START = "dark_energy_dominated_universe_rho0";
+const string DATA_FILE_START = "radiation_dominated_universe_rho0";
 const string DATA_FILE_END = ".dat";
-const double RHO_START [] = {1,1.2,1.3,1.4};
-const string RHO_START_STRINGS [] = {"1","1.2","1.3","1.4"};
-const double A_0 = 1;
-const double T_0 = 0;
-const double MAX_T = 2;
+const double RHO_START [] = {32,64,128,256};
+const string RHO_START_STRINGS [] = {"32","64","128","256"};
+const double A_0 = 0.01;
+const double T_0 = pow(A_0,2);
+const double MAX_T = 100;
 const double MAX_DT = 0.01*MAX_T;
 const double RELATIVE_ERROR_FACTOR = 1E-5;
 // ----------------------------------------------------------------------
 
 
-// The dark energy dominated universe has an equation of state variable
-// of w=-1.0, so we use this and implement a method.
+// The radiation dominated universe has an equation of state variable
+// of w=1/3, so we use this and implement a method.
 // ----------------------------------------------------------------------
 double omega(double rho) {
-  return -1.0;
+  return 1.0/3.0;
 }
 dVector f(double t, const dVector& y) {
   return get_y_prime(omega,y);
@@ -57,7 +58,7 @@ int main () {
   integrator.set_relative_error_factor(RELATIVE_ERROR_FACTOR);
   integrator.set_t0(T_0);
 
-  cout << "Let's simulate a dark energy dominated universe!\n"
+  cout << "Let's simulate a radiation dominated universe!\n"
        << "We assume that:\n"
        << "\tt_0 = " << T_0 << "\n"
        << "\ta(t_0) = " << A_0 << "."
