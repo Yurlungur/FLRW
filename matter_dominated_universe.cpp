@@ -1,6 +1,6 @@
 // matter_dominated_universe.cpp
 // Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
-// Time-stamp: <2013-12-13 17:27:32 (jonah)>
+// Time-stamp: <2013-12-14 14:15:26 (jonah)>
 
 // This is the main loop to generate a matter dominated universe to
 // simulate.

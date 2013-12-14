@@ -1,9 +1,9 @@
 // dark_energy_dominated_universe.cpp
 // Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
-// Time-stamp: <2013-12-14 00:21:25 (jonah)>
+// Time-stamp: <2013-12-13 22:34:07 (jonah)>
 
-// This is the main loop to generate a dark energy dominated universe
-// to simulate.
+// This is the main loop to generate an extremely dark energy
+// dominated universe to simulate.
 
 // Includes
 #include "flrw.hpp"
@@ -16,24 +16,24 @@ using std::string;
 
 // Global constants
 // ----------------------------------------------------------------------
-const int NUM_STARTING_CONDITIONS = 4;
-const string DATA_FILE_START = "dark_energy_dominated_universe_rho0";
+const int NUM_STARTING_CONDITIONS = 5;
+const string DATA_FILE_START = "extremely_dark_energy_dominated_universe_rho0";
 const string DATA_FILE_END = ".dat";
-const double RHO_START [] = {1,1.2,1.3,1.4};
-const string RHO_START_STRINGS [] = {"1","1.2","1.3","1.4"};
+const double RHO_START [] = {0.15,.2,.25,.3,.35};
+const string RHO_START_STRINGS [] = {"0.15","0.2","0.25","0.3",".35"};
 const double A_0 = 1;
 const double T_0 = 0;
-const double MAX_T = 2;
+const double MAX_T = 1;
 const double MAX_DT = 0.01*MAX_T;
 const double RELATIVE_ERROR_FACTOR = 1E-5;
 // ----------------------------------------------------------------------
 
 
-// The dark energy dominated universe has an equation of state variable
-// of w=-1.0, so we use this and implement a method.
+// The extremely dark energy dominated universe has an equation of
+// state variable of w=-1.0, so we use this and implement a method.
 // ----------------------------------------------------------------------
 double omega(double rho) {
-  return -1.0;
+  return -1.2;
 }
 dVector f(double t, const dVector& y) {
   return get_y_prime(omega,y);
@@ -57,7 +57,7 @@ int main () {
   integrator.set_relative_error_factor(RELATIVE_ERROR_FACTOR);
   integrator.set_t0(T_0);
 
-  cout << "Let's simulate a dark energy dominated universe!\n"
+  cout << "Let's simulate our future!\n"
        << "We assume that:\n"
        << "\tt_0 = " << T_0 << "\n"
        << "\ta(t_0) = " << A_0 << "."

@@ -1,7 +1,7 @@
 // flrw.cpp
 
 // Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
-// Time-stamp: <2013-12-12 17:22:40 (jonah)>
+// Time-stamp: <2013-12-14 00:18:10 (jonah)>
 
 // This is the implementation of my program to numerically explore
 // Friedmann-Lemaitre-Robertson-Walker metrics.

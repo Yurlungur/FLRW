@@ -1,7 +1,7 @@
 // flrw.hpp
 
 // Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
-// Time-stamp: <2013-12-12 17:24:02 (jonah)>
+// Time-stamp: <2013-12-14 00:24:48 (jonah)>
 
 // This is the prototype and header file for the program that uses
 // Runge-Kutta methods to numerically explore
