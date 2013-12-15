@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
 # Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
-# Time-stamp: <2013-12-14 16:43:48 (jonah)>
+# Time-stamp: <2013-12-14 16:50:20 (jonah)>
 
 # This is a companion program to my FLRW simulator. It takes a data
 # file and generates a plot of the scale factor, its derivative, the
@@ -52,12 +52,12 @@ def plot_data(times,a_values,rho_values,p_values,a_offset,filename):
     mpl.rcParams.update({'font.size': fontsize})
     lines = [plt.plot(times,y_set,linewidth=my_linewidth)
              for y_set in [a_values,rho_values,p_values]]
-    plt.legend(["{}a - {}".format(a_rescaling,a_offset),r'$\rho$',"p"])
+    plt.legend(["{}a - {}".format(a_rescaling,a_offset),r'$\rho$',"p"],loc=9)
     plt.xlabel(xlabel)
     title_list = filename.split('.')[0].split('_')
     title_list[1] = "universe:"
     title = reduce(lambda x,y: "{} {}".format(x,y),title_list)
-    plt.suptitle(title)
+    plt.title(title)
     plt.show()
     return
 
