@@ -1,0 +1,753 @@
+\documentclass[]{article}
+% Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
+% Time-stamp: <2013-12-14 21:18:33 (jonah)>
+
+% packages
+\usepackage{fullpage}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{latexsym}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+\usepackage{verbatim}
+\usepackage{braket}
+\usepackage{listings}
+\usepackage{pdfpages}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{hyperref}
+
+% for the picture environment
+\setlength{\unitlength}{1cm}
+
+%preamble
+\title{Numerical Explorations of FLRW Cosmologies}
+
+\author{Jonah Miller\\
+  \textit{jonah.maxwell.miller@gmail.com}} 
+
+\date{General Relativity for Cosmology\\Achim Kempf\\ Fall 2013}
+
+% Macros
+\newcommand{\R}{\mathbb{R}} % Real number line
+\newcommand{\N}{\mathbb{N}} % Integers
+\newcommand{\eval}{\biggr\rvert} %evaluated at
+\newcommand{\myvec}[1]{\vec{#1}} % vectors for me
+% total derivatives 
+\newcommand{\diff}[2]{\frac{d #1}{d #2}} 
+\newcommand{\dd}[1]{\frac{d}{d #1}}
+% partial derivatives
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}} 
+\newcommand{\pdd}[1]{\frac{\partial}{\partial #1}} 
+% t derivatives
+\newcommand{\ddt}{\dd{t}}
+\newcommand{\dt}[1]{\diff{#1}{t}}
+% A 2-vector
+\newcommand{\twovector}[2]{\left[\begin{matrix}#1\\#2\end{matrix}\right]}
+% A 3 vector.
+\newcommand{\threevector}[3]{\left[\begin{matrix} #1\\ #2\\ #3 \end{matrix}\right]}
+% Error function
+\newcommand{\erf}{\text{erf}}
+
+\begin{document}
+
+\maketitle
+
+% \begin{abstract}
+%   In this paper, we numerically investigate the past and future of the
+%   night sky. We briefly discuss the origin of the so-called
+%   Friedmann-Lemaitre-Robertson-Walker metric, the homogenous,
+%   isotropic matter-filled universe. We numerically explore the
+%   evolution of the metric given various equations of state of the
+%   fluid filling spacetime.
+% \end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+To attain a picture of the universe as a whole, we must look at it on
+the largest possible scales. Since the universe is almost certainly
+much larger than the observable universe, or indeed the universe we
+will ever observe
+\cite{MapOfUniverse,Carroll,MisnerThorneWheeler,Wald}, some guesswork
+is necessary \cite{Wald}. The most popular---assumption
+used to study the universe as a whole is the \textit{Copernican
+  principle} \cite{BonesOfCopernicus}, the notion that, on the larges
+scales, the universe looks the same everywhere and in every direction
+\cite{Carroll,Wald}.
+
+In modern language, we assume that the universe is homogeneous and
+isotropic. That is, we assume that the energy-momentum tensor that
+feeds Einstein's equations is the same everywhere and in space and has
+no preferred direction
+\cite{Carroll,MisnerThorneWheeler,Wald}. Obviously, this isn't the
+only approach one can take. Roughly speaking one can generate a
+spacetime with an arbitrary amount of symmetry between no symmetry and
+maximal symmetry. The homogeneous isotropic universe is almost as
+symmetric as one can get. One can add time-like symmetry to attain de
+Sitter, anti de Sitter, or Minkowski spacetimes, but that's as
+symmetric as you can get
+\cite{Carroll,MisnerThorneWheeler,Wald}. Relaxing the symmetry
+conditions on the energy-momentum tensor results in, for example, the
+mixmaster universe \cite{MisnerThorneWheeler}. However, observational
+evidence, most strongly the cosmic microwave background, suggests that
+the universe is homogeneous and isotropic to a very high degree
+\cite{Planck}.
+
+In this work, we derive the equations governing the evolution of a
+homogeneous isotropic universe and numerically explore how such a
+universe could evolve. In section \ref{sec:the:metric} we briefly
+derive the so-called Friedmann equations, the equations governing such
+spacetimes. In section \ref{sec:numerical:approach}, we briefly
+discuss the numerical tools we use to evolve these equations. In
+section \ref{sec:results}, we present our results. Finally, in section
+\ref{sec:conclusion}, we offer some concluding remarks.
+
+\section{The Friedmann-Lemaitre-Robertson-Walker Metric}
+\label{sec:the:metric}
+
+First, we derive the metric of a homogenous, isotropic spacetime. Then
+we derive the analytic formulae for its evolution. Because we derived
+the Friedmann equations using tetrads in class \cite{Kempf}, we
+decided to work in coordinates for another perspective.
+
+\subsection{Deriving the Metric}
+\label{subsec:metric:derivation}
+
+% The following discussion borrows from \cite{Carroll} and
+% \cite{MisnerThorneWheeler}, but mostly from \cite{Wald}. We start by
+% putting the words ``homogeneous'' and ``isotropic'' into precise
+% language. 
+% \begin{itemize}
+% \item We define a spacetime as \textit{homogeneous} if we can foliate
+%   the spacetime by a one-parameter family of spacelike hypersurfaces
+%   $\Sigma_t$ such that, for a given hypersurface $\Sigma_{t_0}$ at
+%   time $t_0$ and points $p,q\in\Sigma_{t_0}$, there exists an isometry of
+%   the four-metric $g_{\mu\nu}$ that maps $p$ into $q$ \cite{Wald}.
+% \item We define a spacetime as \textit{isotropic} if at each point
+%   there exits a congruence of timelike curves $\alpha$ with tangent vectors
+%   $u^\mu$ such that, for any point $p$ in the spacetime and any two
+%   space-like vectors $s_1^\mu$ and $s_2^\mu$ orthogonal to $u^\mu$ at
+%   $p$, there exists an isometry of $g_{\mu\nu}$ which leaves $p$ and
+%   $u^\mu$ at $p$ fixed but changes $s_1^\mu$ and $s_2^\mu$
+%   \cite{Wald}.
+% \end{itemize}
+% Note that if a universe is \textit{both} homogeneous \textit{and}
+% isotropic, the foliating hypersurfaces $\Sigma_t$ must be orthogonal
+% to the timelike tangent vector field $u^\mu$ \cite{Wald}. Otherwise,
+% it is possible to use proof by contradiction to show that the isometry
+% guaranteed by isotropy cannot exist \cite{Wald}. This gives us a piece
+% of a canonical coordinate system to use. We define the parameter
+% indexing our hypersurfaces as time $t$.
+% 
+% On each spacelike hypersurface in our foliation, we can restrict the
+% full Lorentzian four-metric $g_{\mu\nu}$ to a Riemannian three-metric
+% $h_{ij}$. Because of homogeneity, there must exist a sufficient number
+% of isometries of $h_{ij}$ to map every point in the hypersurface into
+% every other point \cite{Wald}. Because of isotropy, it must be impo
+
+The following discussion borrows from \cite{Carroll},
+\cite{MisnerThorneWheeler}, and \cite{Wald}. However, we mostly follow
+\cite{Carroll}. It is possible to rigorously and precisely define the
+notions of homogeneous and isotropic \cite{Wald}. However, one can
+prove that homogenous and isotropic spacetimes are foliated by
+maximally symmetric spacelike hypersurfaces
+\cite{Carroll}. Intuitively, at least, it's not hard to convince
+oneself that homogeneity and isotropy are sufficient to enforce
+maximal symmetry. There are three classes of such hypersurfaces all of
+constant scalar curvature: spherical spaces, hyperbolic spaces, and
+flat spaces. Spherical spaces have constant positive
+curvature. Hyperbolic spaces have constant negative curvature, and
+flat spaces have zero curvature \cite{Carroll}.
+
+% \begin{figure}[htb]
+%   \begin{center}
+%     \leavevmode
+%     \includegraphics[width=\textwidth]{figures/comparison_of_curvatures.png}
+%     \caption{A two-dimensional spacelike hypersurface with positive
+%       curvature (left), negative curvature (middle) and no curvature
+%       (right).}
+%     \label{fig:spacelike:curvatures}
+%   \end{center}
+% \end{figure}
+Let us consider a homogenous, isotropic, four-dimensional Lorentzian
+spacetime. We can write the metric as \cite{Carroll}
+\begin{equation}
+  \label{eq:hom:iso:most:general}
+  ds^2 = -dt^2 + a^2(t) d\sigma^2,
+\end{equation}
+where $t$ is the time coordinate, $a(t)$ is a scalar function known as
+the \textit{scale factor}, and $d\sigma^2$ is the metric of the
+maximally symmetric spacelike hypersurface. Up to some overall scaling
+(which we can hide in $a(t)$, we have \cite{Wald}
+\begin{equation}
+  \label{eq:3-metric}
+  d\sigma^2 = \begin{cases}
+    d\chi^2 + \sin^2(\chi)(d\theta^2 + \sin^2(\theta)d\phi^2)&\text{for positive curvature}\\
+    d\chi^2 + \chi^2(d\theta^2 + \sin^2d\phi^2)&\text{for no curvature}\\
+    d\chi^2 + \sinh^2(\chi)(d\theta^2 + \sin^2(\theta)d\phi^2)&\text{for negative curvature}
+    \end{cases},
+\end{equation}
+where $\chi$, $\theta$, and $\phi$ are the usual spherical
+coordinates. However, if we choose $r$ such that
+\begin{equation}
+  \label{eq:def:rho}
+  d\chi = \frac{dr}{\sqrt{1 - k r^2}},
+\end{equation}
+where
+\begin{equation}
+  \label{eq:k:range}
+  k\in\{-1,0,1\}
+\end{equation}
+is the normalized scalar curvature of the hypersurface, we can
+renormalize our equation to put it in a nicer form
+\cite{Carroll,MisnerThorneWheeler},
+\begin{equation}
+  \label{eq:friedmann:equation}
+  ds^2 = -dt^2 + a^2(t)\left[\frac{dr^2}{1 - k r^2} + r^2 d\Omega^2\right],
+\end{equation}
+where
+\begin{equation}
+  \label{eq:def:domega}
+  d\Omega = d\theta^2 + \sin^2(\theta) d\phi^2
+\end{equation}
+is the angular piece of the metric. This is known as the
+\textit{Friedmann-Lemaitre-Roberston-Walker} (FRLW) metric.
+
+\subsection{Evolution and the Friedmann Equation}
+\label{subsec:metric:evolution}
+
+The following discussion draws primarily from the lecture notes
+\cite{Kempf}, specifically lecture 16. If we calculate the Einstein
+tensor
+\begin{equation}
+  \label{eq:def:einstein:tensor}
+  G_{\mu\nu} = R_{\mu\nu} - \frac{1}{2} R g_{\mu\nu}
+\end{equation}
+(using, e.g., a tool like Maple's differential geometry package
+\cite{Maple}) in the frame induced by our choice of coordinates, we
+find that it is diagonal \cite{Kempf}:\footnote{We write the tensor as
+  a linear operator with one raised index because this produces the
+  nicest form of the equations.}
+\begin{eqnarray}
+  \label{eq:einstein:tensor:calculated:tt}
+  G^t_{\ t} &=& -3 \frac{k + \dot{a}^2}{a^2}\\
+  \label{eq:einstein:tensor:calculated:space}
+  G^i_{\ i} &=& - \frac{k + 2a\ddot{a} + \dot{a}^2}{a^2} \ \forall\ i\in\{1,2,3\},\\
+  \label{eq:einstein:tensor:off:diagonal}
+  G^{\mu}_{\ \nu} &=& 0\  \forall\ \mu\neq\nu
+\end{eqnarray}
+where we have suppressed the $t$-dependence of $a$ and where $\dot{a}$
+is a time-derivative of $a$ in the usual way. 
+
+If we feed the Einstein tensor into Einstein's equation in geometric units,
+\begin{equation}
+  \label{eq:einsteins:equation:1}
+  G_{\mu \nu} = 8\pi \tilde{T}_{\mu\nu} - \Lambda g_{\mu\nu},
+\end{equation}
+since $g_{\mu\nu}$ is diagonal, we see that $T^\mu_{\ \nu}$ must be
+diagonal too. Indeed, with one index raised, it looks like the
+energy-momentum tensor for a perfect fluid in its rest frame:
+\begin{eqnarray}
+  T^{\mu}_{\ \nu} &=& \tilde{T}^{\mu}_{\ \nu} - \frac{\Lambda}{8\pi}\mathcal{I}\nonumber\\
+  \label{eq:T:mu:nu}
+  &=& \left[\begin{array}{cccc}-\rho&0&0&0\\0&p&0&0\\0&0&p&0\\0&0&0&p\end{array}\right] - \frac{\Lambda}{8\pi} \left[\begin{array}{cccc}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&1\end{array}\right],
+\end{eqnarray}
+where $\mathcal{I}$ is the identity operator, $\rho$ is the density of
+the fluid, and $p$ is the pressure of the fluid. $\tilde{T}^0_{\ 0}$
+is negative because we've raised one index. Obviously, this is just a
+mathematical coincidence, and we've even manipulated our definition of
+pressure to hide our choice of coordinates. However, one can make weak
+physical arguments to justify it \cite{Carroll,MisnerThorneWheeler}.
+
+The time-time component of Einstein's equation
+\eqref{eq:einsteins:equation:1} then gives the first Friedmann equation \cite{Carroll,MisnerThorneWheeler,Kempf}:
+\begin{equation}
+  \label{eq:Friedmann:1:orig}
+  \frac{\dot{a}^2 + k}{a^2} = \frac{8\pi \rho + \Lambda}{3}.
+\end{equation} 
+Any space-space diagonal component gives a second equation
+\cite{Carroll,MisnerThorneWheeler,Kempf}:
+\begin{equation}
+  \label{eq:einstein:2}
+  - \frac{k + 2a\ddot{a} + \dot{a}^2}{a^2} = 8\pi p + \Lambda.
+\end{equation}
+Now we take
+\begin{equation}
+  \label{eq:trace:condition}
+  -\frac{1}{2} a \left[\left(\text{equation \eqref{eq:Friedmann:1:orig}}\right) + \frac{1}{3}\left(\text{equation \eqref{eq:einstein:2}}\right)\right],
+\end{equation}
+which yields
+\begin{equation}
+  \label{eq:Friedmann:2:orig}
+  \frac{\ddot{a}}{a} = -\frac{4\pi}{3} \left(\rho + 3 p\right) + \frac{\Lambda}{3},
+\end{equation}
+which is the second Friedmann equation \cite{Kempf}. To use these
+equations to describe an FLRW universe, we need one more piece of
+information: the relationship between density and pressure, called an
+equation of state \cite{Carroll,MisnerThorneWheeler,Kempf}. We
+parametrize our ignorance of the equation of state as
+\begin{equation}
+  \label{eq:def:eos}
+  p = \omega(\rho) \rho,
+\end{equation}
+where $\omega(\rho)$ is some scalar function. 
+
+Finally, we hide the cosmological constant as a type of matter, which
+we call dark matter. This corresponds to resetting
+\begin{equation}
+  \label{eq:rho:transformation}
+  \rho\to\rho - \frac{\Lambda}{8\pi}.
+\end{equation}
+In this case, the Friedmann equations are
+\begin{eqnarray}
+  \label{eq:Friedmann:1}
+  \frac{\dot{a}^2 + k}{a^2} &=& \frac{8\pi}{3}\rho\\
+  \label{eq:Friedmann:2}
+  \frac{\ddot{a}}{a} &=& -\frac{4\pi}{3} \left(\rho + 3 p\right).
+\end{eqnarray}
+Then a cosmological constant corresponds to an energy density that
+does not dilute with time... and one with negative pressure. Unless
+otherwise stated, we will make this choice.
+
+In the simple case when $\omega$ is a constant, we get several
+different regimes. In the case of $\omega \geq 0$, as for a
+radiation-dominated or matter-dominated universe
+\cite{MisnerThorneWheeler,Carroll,Kempf},\footnote{If $\omega=0$, we
+  have a matter-dominated universe where the density scales as one
+  over the scale factor cubed, in other words, one over volume. If
+  $\omega=1/3$, we have a radiation-dominated universe, where the
+  density scales as one over the scale factor to the fourth. The extra
+  scaling of the scale factor is due to cosmological redshift
+  \cite{Carroll,Kempf}.} the scale factor increases monotonically and
+at a decelerating rate \cite{MisnerThorneWheeler,Carroll,Kempf}. In
+the case of $\omega = -1$, one gets a dark-energy dominated universe
+with accelerating expansion
+\cite{MisnerThorneWheeler,Carroll,Kempf}. And if $\omega$ is simply
+very close to $-1$, one gets an inflationary universe
+\cite{MisnerThorneWheeler,Carroll,Kempf}. As a test, will numerically
+explore the cases when $\omega$ is constant and we have a known
+regime. We will also numerically explore the cases when $\omega$ is a
+more sophisticated object.
+
+\section{Numerical Approach}
+\label{sec:numerical:approach}
+
+In any numerical problem, there are two steps. The first is two frame
+the problem in a way compatible with numerical methods. The second
+step is to actually design and implement a method. To limit our
+problem domain, from here on out, we assume that
+\begin{equation}
+  \label{eq:def:k}
+  k = 0.
+\end{equation}
+
+\subsection{Framing the Problem}
+\label{subsec:framing:the:problem}
+
+We will use a numerical algorithm to solve initial value
+problems. These algorithms are usually formulated as first order ODE
+solvers. The ode is written in the form
+\begin{equation}
+  \label{eq:ode:formulation}
+  \diff{\myvec{y}}{t} = \myvec{f}(y,t)\text{ with }\myvec{y}(0) = \myvec{y}_0,
+\end{equation}
+where $\myvec{y}$ is a vector containing all the functions of $t$ one
+wishes to solve for. Let's see if we can't write the Friedmann
+equations in such a form. 
+
+Our first step is to reduce the second-order ODE system to a
+first-order system. We will do this by eliminating $\ddot{a}$ in favor
+of some other variable. If we differentiate equation
+\eqref{eq:Friedmann:1}, we get
+\begin{equation}
+  \label{eq:dF1}
+  -2 \frac{\dot{a}^2}{a^3} + \frac{\ddot{a}}{a^2} = \frac{8\pi}{3}\dot{\rho}.
+\end{equation}
+We can substitute $\ddot{a}$ in from \eqref{eq:Friedmann:2} to obtain
+an equation for the time evolution of $\rho$:
+\begin{equation}
+  \label{eq:Friedmann:rho}
+  \dot{\rho} = - 3 \left(\frac{\dot{a}}{a}\right)\left(\rho + p\right),
+\end{equation}
+which expresses conservation of mass energy. As a last step, we use
+equation \eqref{eq:Friedmann:1} and equation \eqref{eq:def:eos} to
+eliminate $\dot{a}$ and $p$ from equation \eqref{eq:Friedmann:rho} to
+attain an evolution equation for $\rho$:
+\begin{equation}
+  \label{eq:rho:evolution}
+  \dot{\rho} = \mp 3\left[\rho + \omega(\rho)\rho\right]\sqrt{\frac{8\pi}{3}\rho-k}.
+\end{equation}
+
+So, putting it all together, if we define the two-vector
+\begin{equation}
+  \label{eq:def:y}
+  \myvec{y}(t) = \twovector{a(t)}{\rho(t)},
+\end{equation}
+then we can write the equations governing the evolution of the
+universe as
+\begin{equation}
+  \label{eq:y:prime:orig}
+  \ddt \myvec{y}(t) = \myvec{f}(y)
+  = \pm\twovector{\sqrt{8\pi a^2\rho/3}}{-3\left(\rho + \omega(\rho)\rho\right)\sqrt{\frac{8\pi}{3}\rho-k}}.
+\end{equation}
+Since our universe is expanding and we're interested in an expanding
+universe, we choose $\dot{a}>0$. This gives us
+\begin{equation}
+  \label{eq:y:prime}
+  \myvec{f}(y) = \twovector{\sqrt{8\pi a^2\rho/3}}{-3\left(\rho + \omega(\rho)\rho\right)\sqrt{\frac{8\pi}{3}\rho-k}}.
+\end{equation}
+
+\subsection{Initial Data}
+\label{subsec:initial:data}
+
+Even with evolution equations, we're still missing some critical
+information. A first-order ODE system needs one initial value for each
+unknown function.
+
+Obviously, equation \eqref{eq:y:prime} breaks down when the scale
+factor is zero. Therefore we must be careful to avoid starting a
+simulation too close to the big bang singularity. For this reason, we
+will never assume that $a(0) = 0$. If convenient, we will choose
+$a(0)$ to be close to zero. There is one exception, which is the case
+of a dark-energy dominated universe, where we will choose $a(0)=1$,
+since such a universe is exponentially growing.
+
+We still need to choose a value for $\rho(0)$, however, so long as
+$\rho(0) > 0$, we should expect it to not matter much. General
+relativity is invariant under an overall re-scaling of energy
+\cite{MisnerThorneWheeler,Wald}. However, to get a better idea of
+qualitative behavior, we will chose a number of values of $\rho(0)$ in
+each case.
+
+\subsection{Numerical Method}
+\label{subsec:numerical:method}
+
+For a given $\omega(\rho)$ and set of initial data, we solve the ODE
+system using a ``Runge-Kutta'' algorithm. Before we define
+Runge-Kutta, let's first describe a simpler, similar, method. The
+definition of a derivative is
+\begin{equation}
+  \label{eq:derivative:definition}
+  \ddt\myvec{y}(t) = \lim_{h\to 0}\left[\frac{\myvec{y}(t+h) - \myvec{y}(t)}{h}\right].
+\end{equation}
+Or, alternatively, if $h$ is sufficiently small,
+\begin{equation}
+  \label{eq:forward:euler}
+  \myvec{y}(t+h) = \myvec{y}(t) + h \dt{\myvec{y}}(t).
+\end{equation}
+If we know $\myvec{y}(t_0)$ and $\ddt\myvec{y}(t_0)$, then we can use
+equation \eqref{eq:forward:euler} to solve for $\myvec{y}(t+h)$. Then,
+let $t_1 = t_0 + h$ and use equation \eqref{eq:forward:euler} to solve
+for $\myvec{y}(t_1 + h)$. In this way, we can solve for $\myvec{y}(t)$
+for all $t > t_0$. This method is called the ``forward Euler'' method
+\cite{Heath}.
+
+Runge-Kutta methods are more sophisticated. One can use a Taylor
+series expansion to define a more accurate iterative scheme that
+relies on higher-order derivatives, not just first
+derivatives. However, since we only have first derivative information,
+we simulate higher-order derivatives by evaluating the first
+derivative at a number of different values of $t$. Then, of course,
+the higher-order derivatives are finite differences of these
+evaluations \cite{Heath,NumericalRecipes}.
+
+We use a fourth-order Runge-Kutta method---which means the method
+effectively incorporates the first four derivatives of a
+function---with adaptive step sizes: the 4(5) Runge-Kutta-Fehlberg
+method \cite{Fehlberg}. We use our own implementation, written in
+C++. The Runge-Kutta solver by itself can be found here:
+\cite{RKF45}.\footnote{It is good coding practice to make one's code as
+  flexible as possible. By separating the initial-value solver from a
+  specific application, we make it possible to reuse our code.} In the
+context of FLRW metrics, our implementation can be found here:
+\cite{FLRWCode}. Both pieces of code are open-sourced, and the reader
+should feel free to download and explore either program.
+
+\section{Results}
+\label{sec:results}
+
+Before we delve into unknown territory, it's a good idea to explore
+known physically interesting FLRW solutions. This is what we do
+now. 
+
+\subsection{Known Solutions}
+\label{subsec:known:solutions}
+
+If the universe is dominated by radiation, as in the case in the early
+universe, just after reheating \cite{Kempf}, we should expect the
+scale factor to grow as $a(t) = \left(t/t_0\right)^{1/2}$
+\cite{Kempf}. To account for not quite starting at $a=0$, we fit our
+numerical solutions to
+\begin{equation}
+  \label{eq:radiation:dominated:fit}
+  a(t) = a_0 t^{1/2} + b,
+\end{equation}
+where $a_0$ and be are constants. Figure \ref{fig:radiation:dominated}
+shows scale factors for several different choices of $\rho(0)$ and a
+fit to an analytic scale factor solution using equation
+\eqref{eq:radiation:dominated:fit}, which matches the data extremely
+well.\footnote{In all plots showing a fit, we've removed most of the
+  data points. There are a minimum of 100 data points generated per
+  simulation. However these are hidden to demonstrate the accuracy of
+  the fit.}
+
+\begin{figure}[htb]
+  \begin{center}
+    \leavevmode
+    \hspace{-.2cm}
+     \includegraphics[width=8.2cm]{figures/radiation_dominated_all_scale_factors.png}
+     \hspace{-0.3cm}
+     \includegraphics[width=8.3cm]{figures/radiation_dominated_fit_rho0256.png}
+     \caption[Radiation Dominated Universe]{The Radiation-Dominated
+       Universe. Left: Scale factor as a function of time for a number
+       of different values of $\rho(0)$. Right: A fit to equation
+       \eqref{eq:radiation:dominated:fit} for $\rho(0)=256$.}
+    \label{fig:radiation:dominated}
+  \end{center}
+\end{figure}
+
+If the universe is dominated by matter, as was the case until
+extremely recently \cite{Kempf}, then we expect the scale factor to
+scale as $a(t) = \left(t/t_0\right)^{2/3}$ \cite{Kempf}. To account
+for not quite starting at $a=0$, we fit our numerical solutions to
+\begin{equation}
+  \label{eq:matter:dominated:fit}
+  a(t) = a_0 t^{2/3} + b.
+\end{equation}
+Figure \ref{fig:matter:dominated} shows the scale factors and fit.
+\begin{figure}[htb]
+  \begin{center}
+    \leavevmode
+    \hspace{-.2cm}
+     \includegraphics[width=8.2cm]{figures/matter_dominated_all_scale_factors.png}
+     \hspace{-0.3cm}
+     \includegraphics[width=8.3cm]{figures/matter_dominated_fit_rho032.png}
+     \caption[Matter Dominated Universe]{The Matter-Dominated
+       Universe. Left: Scale factor as a function of time for a number
+       of different values of $\rho(0)$. Right: A fit to equation
+       \eqref{eq:matter:dominated:fit} for $\rho(0)=32$.}
+    \label{fig:matter:dominated}
+  \end{center}
+\end{figure}
+
+If the universe is dominated by dark energy, as will be the case very
+soon \cite{Kempf}, then we expect the scale factor to scale as
+$a(t)=a_0 e^{t_0t}$. For convenience, we fit to
+\begin{equation}
+  \label{eq:dark:energy:dominated:fit}
+  a(t) = e^{t_0t + b},
+\end{equation}
+where $t_0$ and $a_0$ are constants. Figure
+\ref{fig:dark:energy:dominated} shows the scale factors and fit.
+\begin{figure}[htb]
+  \begin{center}
+    \leavevmode
+    \hspace{-.2cm}
+     \includegraphics[width=8.2cm]{figures/dark_energy_dominated_universe_scale_factors.png}
+     \hspace{-0.3cm}
+     \includegraphics[width=8.3cm]{figures/dark_energy_dominated_fit_rho012.png}
+     \caption[Matter Dominated Universe]{The Dark Energy-Dominated
+       Universe. Left: Scale factor as a function of time for a number
+       of different values of $\rho(0)$. Right: A fit to equation
+       \eqref{eq:matter:dominated:fit} for $\rho(0)=1.2$.}
+    \label{fig:dark:energy:dominated}
+  \end{center}
+\end{figure}
+
+\subsection{A Multi-Regime Universe}
+\label{subsec:multi-regime}
+
+Now that we've confirmed appropriate behavior in each of the
+analytically explored regimes, it's time to move into unknown
+territory! We will attempt to construct a history of the universe by
+splicing together the known solutions to the Friedmann equations in a
+smooth way. 
+
+To this end, we let $\omega$ vary smoothly with $\rho$. We want the
+radiation, matter, and dark energy dominated regimes of the universe
+to emerge naturally, separated by transition regions. Furthermore, we
+want $\omega(\rho)$ to be monotonically increasing, since we know that
+we first had a radiation dominated universe---radiation scales as
+$a^{1/4}$---then a matter dominated universe---matter scales as
+$a^{1/3}$---and finally a dark energy dominated universe---dark energy
+does not scale with $a$ at all
+\cite{Carroll,MisnerThorneWheeler,Kempf}. The dark energy regime
+should take over when $\rho$ is very small and the normal matter and
+radiation has diluted away \cite{Carroll,MisnerThorneWheeler,Kempf}.
+
+One function that smoothly, asymptotically, and monotonically
+interpolates between two constant values is the error function,
+\begin{equation}
+  \label{eq:def:error:function}
+  \erf(x) = \frac{2}{\sqrt{\pi}}\int_0^x e^{-t^2}dt.
+\end{equation}
+$\erf(-\infty)=-1$ and $\erf(+\infty)=+1$. However, the transition
+region is very sharp and the error function is effectively $-1$ for
+$x<-2$ and effectively $+1$ for $x>2$. We can therefore create a
+smoothly varying $\omega(\rho)$ with the desired properties by taking
+a linear combination of error functions:
+\begin{equation}
+  \label{eq:interpolating:function}
+  \omega(\rho) = -1 + \left(\frac{1}{2}\right) \left(1+\frac{1}{3}\right) + \frac{1}{2}\erf\left(\frac{\rho - \rho_{DE}}{\Delta_{DE}}\right) + \left(\frac{1}{2}\right)\left(\frac{1}{3}\right)\erf\left(\frac{\rho - \rho_{RM}}{\Delta_{RM}}\right),
+\end{equation}
+where $\rho_{DE}$ is the value of $\rho$ marking the change of regimes
+from a matter-dominated to a dark energy dominated universe and
+$\Delta_{DE}$ is the width of the transition region. $\rho_{RM}$ and
+$\Delta_{RM}$ fill analogous roles for the transition from a radiation
+to a matter dominated universe.
+
+By varying $\rho_{DE}$, $\rho_{RM}$, $\Delta_{DE}$, and $\Delta_{RM}$,
+we can select a function where the transition between regimes is very
+abrupt or where the transition is very gradual. We chose four such
+functions, as shown in figure \ref{fig:omega:of:rho}: an equation of
+state with abrupt transitions
+($\rho_{DE}=10,\Delta_{DE}=\Delta_{RM}=1,\rho_{RM}=20$), one with
+moderate transitions
+($\rho_{DE}=20,\Delta_{DE}=\Delta_{RM}=5,\rho_{RM}=40$), one with
+gradual transitions
+($\rho_{DE}=25,\Delta_{DE}=\Delta_{RM}=12,\rho_{RM}=80$). And,
+finally, as a check, we chose a function with no well defined epochs
+at all ($\rho_{DE}=37,\Delta_{DE}=\Delta_{RM}=20,\rho_{RM}=92$).
+
+\begin{figure}[tbh]
+  \begin{center}
+    \leavevmode
+    \includegraphics[width=12cm]{figures/multi_regime_eos_1.png}
+    \caption[EOS]{The equation of state variable $\omega$ (see
+      equation \eqref{eq:def:eos}) as a function of energy density
+      $\rho$, as defined in equation
+      \eqref{eq:interpolating:function}. We choose four possible
+      scenarios: an equation of state with abrupt transitions
+      ($\rho_{DE}=10,\Delta_{DE}=\Delta_{RM}=1,\rho_{RM}=20$), one
+      with moderate transitions
+      ($\rho_{DE}=20,\Delta_{DE}=\Delta_{RM}=5,\rho_{RM}=40$), one
+      with gradual transitions
+      ($\rho_{DE}=25,\Delta_{DE}=\Delta_{RM}=12,\rho_{RM}=80$), and
+      one with almost no transitions at all
+      ($\rho_{DE}=37,\Delta_{DE}=\Delta_{RM}=20,\rho_{RM}=92$)}
+    \label{fig:omega:of:rho}
+  \end{center}
+\end{figure}
+
+The evolution of $a(t)$ for these four choices of $\omega(\rho)$ is
+shown in figure \ref{fig:a:varying:omega}, where we also show the
+evolution of $\rho$ and $p$ on the same plots. (We have rescaled
+$a(t)$ so that it fits nicely with the other variables.) In these
+plots, we can see hints of each of the three analytically predicted
+epochs of growth. Initially $\ddot{a} < 0$, but it transitions to
+$\ddot{a}>0$.
+
+Surprisingly, so long as we allow $\omega(\rho)$ to
+vary from $+1/3$ to $0$ to $-1$, $a(t)$ seems remarkably resilient to
+the details such as the abruptness of the transition or the precise
+location of the transition region. Indeed, when we plotted all four
+scale factor functions on the same scale, they overlapped completely.
+
+We postulate that his unexpected resilience is due to the $a^{-2}$
+term in the formula for $\dot{\rho}$. Although different fixed values
+of $\omega$ drive $a(t)$ at different rates, $a(t)$ in turn drives
+$\rho(t)$ into a regime that balances out this change. This stability
+is a boon to cosmologists, since it means that, for the purpose of
+predictions a piecewise function composed of the analytic solutions is
+sufficient---we don't need to look for a more detailed or accurate
+equation of state.
+
+\begin{figure}[htb]
+  \begin{center}
+    \leavevmode
+    \hspace{-.2cm}
+     \includegraphics[width=8.35cm]{figures/multi_regime_abrupt_transition.png}
+     \hspace{-0.3cm}
+     \includegraphics[width=8.35cm]{figures/multi_regime_moderate_transition.png}\\
+     \vspace{0.2cm}
+     \hspace{-.2cm}
+     \includegraphics[width=8.35cm]{figures/multi_regime_mild_transition.png}
+     \hspace{-0.3cm}
+     \includegraphics[width=8.35cm]{figures/multi_regime_no_transition.png}
+     \caption[$a(t)$ with a variable $\omega(\rho)$]{$a(t)$ with a
+       variable $\omega(\rho)$. We plot the scale factor for the four
+       equations of state show in figure \ref{fig:omega:of:rho}.}
+     \label{fig:a:varying:omega}
+  \end{center}
+\end{figure}
+
+\subsection{$\omega \approx -1.2$}
+\label{subsec:label:omega:1.2}
+
+The Pan-STARRS1 survey \cite{Pan-STARRS1} predicts that $\omega
+\approx -1.2$, which is a very strange type of matter indeed. When
+$\omega=-1$, it emerges from the cosmological constant term and the
+energy density $\rho$ stays constant as the scale factor changes. If
+$\omega<-1$, then the energy density must \textit{increase} with the
+scale factor! Since we expect energy density to \textit{dilute} with
+increased scale factor \cite{Carroll,Kempf}, this is decidedly odd!
+
+We can test this hypothesis with our FLRW simulation code. And,
+indeed, the energy density slowly grows with scale factor, as shown in
+figure \ref{fig:omega:1.2}. The result is that the scale factor grows
+with time more quickly than an exponential. We fit $\ln(a(t))$ to a
+polynomial and found a cubic to fit well. Figure \ref{fig:omega:1.2}
+shows the results of one such fit.
+\begin{figure}[htb]
+  \begin{center}
+    \leavevmode
+    \hspace{-.2cm}
+     \includegraphics[width=8.2cm]{figures/our_future_universe_all_variables_rho035.png}
+     \hspace{-0.3cm}
+     \includegraphics[width=8.3cm]{figures/our_future_universe_fit_rho035.png}
+     \caption[Our Future Universe?]{Our future universe? We solve for
+       the universe when $\omega \approx -1.2$. Left: Scale factor,
+       density, and pressure as a function of time. Right: A fit to
+       equation $a(t) = \exp(a_0 t^3 + b t^2 + c t + d)$. In both
+       cases, $\rho(0) = 0.35$.}
+    \label{fig:omega:1.2}
+  \end{center}
+\end{figure}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+In summary, given that the universe is foliated by homogeneous and
+isotropic hypersurfaces, we have re-derived how to solve for the
+evolution of space as a function of time
+\cite{Carroll,MisnerThorneWheeler,Wald,Kempf}. We have also used a
+fourth-order Runge-Kutta-Fehlberg method \cite{Fehlberg,RKF45} to
+numerically solve for the universe given these evolution equations. We
+have reproduced the analytically known epochs of evolution and solved
+for the universe as it transitions between analytically known
+radiation-dominated, matter-dominated, and dark energy-dominated
+regimes. Finally, we have solved for a universe dominated by an
+equation of state where $\omega<-1$ and the energy density increases
+slowly with scale factor. In this case, we discovered faster than
+exponential growth, which agrees qualitatively with expectations.
+
+It is a pleasant surprise to find that the evolution of the universe
+extremely resilient to a choice of equation of state,
+$p=\omega(\rho)\rho$, so long as $\omega(\rho)$ varies smoothly and
+monotonically from $\omega=-1$ to $\omega=+1/3$. This means that it is
+sufficient for cosmologists to study the evolution of the universe
+epoch by epoch, and not worry too much about the transitional periods.
+
+We would have liked to study the big bounce scenario wherein the scale
+factor shrinks to some minimum value and then grows
+monotonically. This is certainly analytically feasible. In the case of
+a positively curved spacelike foliation dominated by dark energy, for
+example, we analytically attain de Sitter space, where $a(t)\approx
+\cosh(t)$. Unfortunately, $\dot{a}$ must equal zero in this scenario,
+and this condition makes the first-order version of the Friedmann
+equations singular. A numerical treatment of the big bounce seems
+difficult if we continue to treat it as an initial value problem. A
+better approach might be to treat the big bounce scenario as a
+boundary value problem with initial and final values of $a(t)$ and a
+negative value for $\dot{a}(t)$. In general, the numerical methods to
+treat initial value problems are very different from those used to
+treat boundary value problems \cite{Heath}. Thus it would be necessary
+to implement another approach (e.g., finite elements) anew. This would
+be an interesting future project.
+
+%Bibliography
+\bibliography{frlw_project}
+\bibliographystyle{hunsrt}
+
+\end{document}
