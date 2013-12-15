@@ -1,6 +1,6 @@
 # Makefile for the FLRW package
 # Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
-# Time-stamp: <2013-12-14 14:21:02 (jonah)>
+# Time-stamp: <2013-12-14 21:57:41 (jonah)>
 
 # The default compiler is g++
 CXX = g++
@@ -8,7 +8,7 @@ CXX = g++
 # Flags for the compiler. Ask for warnings. Enable the debugger.
 CXXFLAGS = -Wall -g
 
-default: multi-regime
+default: all
 all: test radiation_dominated_universe matter_dominated_universe dark_energy_dominated_universe our_future_universe multi-regime
 
 multi-regime: multi-regime.bin
