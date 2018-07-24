@@ -20,6 +20,12 @@ https://github.com/Yurlungur/runge_kutta
 
 # INSTALLATION and USE
 
+To download, just clone the repo:
+```bash
+git clone https://github.com/Yurlungur/FLRW.git
+cd FLRW
+```
+
 This program uses the linux make utility for installation and
 configuration. It is not configured for Windows, allthough it could
 probably be easily modified ot run in that environment.
