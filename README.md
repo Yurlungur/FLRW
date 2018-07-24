@@ -28,30 +28,27 @@ There are a number of small, pre-configured programs
 that use the main libraries that you can build to run a
 simulation. Here are the commands:
 
-make test --- This makes a unit test driver for the libraries
-              in question.
-make radiation_dominated_universe --- Simulate a universe filled
-                                      mostly with photons. This
+* `make test` This makes a unit test driver for the libraries in question.
+* `make radiation_dominated_universe` --- Simulate a universe filled mostly with photons. This
 				      matches the state of the
 				      universe right after reheating
 				      (or the big bang).
-make matter_dominated_universe --- Simulate a universe filled with
+* `make matter_dominated_universe` --- Simulate a universe filled with
      			       	   non-interacting dust, much like the
 				   stars and galaxies that fill the
 				   universe today.
-make dark_energy_dominated_universe --- Simulate the universe as it
+* `make dark_energy_dominated_universe` --- Simulate the universe as it
      				    	would be if only dark energy
 					filled the universe. It is
 					likely the universe will look
 					like this in the far future.
-make multi-regime --- Simulate the universe as it transitions from
+* `make multi-regime` --- Simulate the universe as it transitions from
      		      radiation-dominated to matter-dominated to
 		      dark energy-dominated. We examine four possible
 		      ways the universe could transition by selecting
 		      an equation of state relating density and pressure
 		      of matter in the universe.
-make our_future_universe --- Recent experiments show
-     			     (http://www.scientificamerican.com/article.cfm?id=dark-energy-cosmological-constant&page=2)
+* `make our_future_universe` --- [Recent experiments show](http://www.scientificamerican.com/article.cfm?id=dark-energy-cosmological-constant&page=2)
      			     that the universe may have an equation
 			     of state variable omega(rho) equal to -1.2.
 			     The type of matter required to create this is
@@ -59,34 +56,37 @@ make our_future_universe --- Recent experiments show
 			     energy density increases as the scale
 			     factor increases. This simulation explores
 			     that possibility.
-make all --- Generates all of the above simulations
-make clean --- Cleans the directory, removing all binary files.
+* `make all` --- Generates all of the above simulations
+* `make clean` --- Cleans the directory, removing all binary files.
 
-Once you've run make, you should have a *.bin file in your
+Once you've run make, you should have a `*.bin` file in your
 directiory. execute it with
+```bash
 chmod a+x *.bin
 ./<file name>.bin
-
+```
 The program will then run a number of simulations and output a number
-of data files ending in *.dat. Each file has three columns, each line
+of data files ending in `*.dat`. Each file has three columns, each line
 is one time step. They show the following quantities:
-time a(t) rho(t) p(t)
+`time a(t) rho(t) p(t)`
 
 You can plot these quantities with four convenient python programs
 included, which require python 2.7, numpy, scipy, and matplotlib. Call
 them with
+```bash
 python2 program.py filename1.dat filename2.dat
+```
 they can take an arbitrary number of files.
 
 The python programs:
-plot_scale_factor.py --- plots the scale factor as a function of
-		     	 time for each included *.dat file
-plot_all_variables.py --- plots a(t),rho(t), and p(t) on the same
+* `plot_scale_factor.py` --- plots the scale factor as a function of
+		     	 time for each included `*.dat` file
+* `plot_all_variables.py` --- plots `a(t)`,`rho(t)`, and `p(t)` on the same
 		      	  plot.
-plot_all_variables_big_a.py --- The same as plot_all_variables.py
-                                but a(t) has been rescaled for easier
+* `plot_all_variables_big_a.py` --- The same as plot_all_variables.py
+                                but `a(t)` has been rescaled for easier
 				viewing.
-MultiRegime.py --- Plots omega(rho) for every equation of state used
+* `MultiRegime.py` --- Plots `omega(rho)` for every equation of state used
 	       	   in the multi-regime simulation. Takes no input
 		   data.
 
