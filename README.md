@@ -3,8 +3,8 @@ FLRW: A numerical exploration of Friedmann-Lemaitre-Robertson-Walker Metrics
 Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
 Time-stamp: <2013-12-20 15:53:59 (jonah)>
 
-                         INTRODUCTION
-======================================================================
+# INTRODUCTION
+
 This is my program to numerically solve for homogeneous, isotropic
 solutions to Einstein's equations. To this end, I assume the
 Friedmann-Lemaitre-Robertson-Walker metric and numerically solve the
@@ -18,9 +18,8 @@ the github repository. However, if you want to play with my RKF
 integrator all by itself, you can find it here:
 https://github.com/Yurlungur/runge_kutta
 
+# INSTALLATION and USE
 
-                    INSTALLATION and USE
-======================================================================
 This program uses the linux make utility for installation and
 configuration. It is not configured for Windows, allthough it could
 probably be easily modified ot run in that environment.
@@ -92,8 +91,8 @@ MultiRegime.py --- Plots omega(rho) for every equation of state used
 		   data.
 
 
-                     PHYSICS DETAILS
-======================================================================
+# PHYSICS DETAILS
+
 We use geometrized units, which means that c=G=hbar=1.
 The scale factor is not normalized. It has no absolute meaning.
 
